@@ -142,3 +142,50 @@ python tests\peer_diag.py --p1 COM4 --p2 COM6 --test
 
 Close the Streamlit dashboard and any Arduino Serial Monitor first — only one
 program may own a COM port.
+
+---
+
+## 7. Re-verification after USB re-enumeration
+
+Windows later re-assigned the ports. The boards were then `COM4` = **2DF4** and
+`COM5` = **7630** (COM6 no longer present). Full command output:
+
+```text
+python tests/peer_diag.py --p1 COM4 --p2 COM5
+
+============================================================
+COM4
+  READY    : PEERREADY,id=2DF4,radio=OK,freq=433000000,sf=7,sync=0x12,seq=28
+  versions : [('0x12', 'OK'), ('0x12', 'OK'), ('0x12', 'OK'), ('0x12', 'OK'), ('0x12', 'OK')]
+  freq     : ['433000000', '433000000', '433000000', '433000000', '433000000']
+  opmode   : ['0x86', '0x86', '0x86', '0x86', '0x86']
+============================================================
+COM5
+  READY    : PEERREADY,id=7630,radio=OK,freq=433000000,sf=7,sync=0x12,seq=32
+  versions : [('0x12', 'OK'), ('0x12', 'OK'), ('0x12', 'OK'), ('0x12', 'OK'), ('0x12', 'OK')]
+  freq     : ['433000000', '433000000', '433000000', '433000000', '433000000']
+  opmode   : ['0x86', '0x86', '0x86', '0x86', '0x86']
+```
+
+```text
+python tests/peer_diag.py --p1 COM4 --p2 COM5 --test
+
+COM4 -> COM5: TEXT,DIAG TEST
+   TX: TXSTAGE,seq=29,stage=WAITING_ACK,attempt=1,ms=3009
+   TX: TXSTAGE,seq=29,stage=ACK_RECEIVED,attempt=1,rssi=-51,snr=9.25,ms=3269
+   TX: TXSTAGE,seq=29,stage=DELIVERY_CONFIRMED,attempts=1,tx=OK,ack=OK,ms=3280
+   RX: ACKTX,seq=29,from=7630,to=peer,attempt=1,begin=1,txdone=1,opmode_after=0x81,freq=433000000,ms=3252
+   RX: ACKTX,seq=29,from=7630,to=peer,attempt=2,begin=1,txdone=1,opmode_after=0x81,freq=433000000,ms=3416
+   RX: RXPKT,seq=29,from=2DF4,type=T,dup=0,rssi=-45,snr=10.00,ack=OK,text=444941472054455354,rx=1,rxdup=0,rxinvalid=0,ms=3559
+COM5 -> COM4: TEXT,DIAG TEST
+   TX: TXSTAGE,seq=33,stage=WAITING_ACK,attempt=1,ms=12003
+   TX: TXSTAGE,seq=33,stage=ACK_RECEIVED,attempt=1,rssi=-48,snr=10.00,ms=12264
+   TX: TXSTAGE,seq=33,stage=DELIVERY_CONFIRMED,attempts=1,tx=OK,ack=OK,ms=12275
+   RX: ACKTX,seq=33,from=2DF4,to=peer,attempt=1,begin=1,txdone=1,opmode_after=0x81,freq=433000000,ms=12257
+   RX: ACKTX,seq=33,from=2DF4,to=peer,attempt=2,begin=1,txdone=1,opmode_after=0x81,freq=433000000,ms=12421
+   RX: RXPKT,seq=33,from=7630,type=T,dup=0,rssi=-44,snr=10.25,ack=OK,text=444941472054455354,rx=1,rxdup=0,rxinvalid=0,ms=12564
+```
+
+Result: both directions delivered on the first attempt with matching ACKs.
+Port numbering changed; behaviour did not.
+

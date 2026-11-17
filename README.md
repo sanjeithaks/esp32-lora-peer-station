@@ -54,14 +54,20 @@ and no simulated telemetry anywhere in the project.
 
 | Item | Value |
 |---|---|
-| Board 1 | ESP32-WROOM-32 DevKit — USB `/dev/ttyUSB0` → **COM4** — device ID **7630** |
-| Board 2 | ESP32-WROOM-32 DevKit — USB → **COM6** — device ID **2DF4** |
+| Board A | ESP32-WROOM-32 DevKit — device ID **7630** |
+| Board B | ESP32-WROOM-32 DevKit — device ID **2DF4** |
 | Radio | 2 × RA-02 SX1278, 433 MHz, version register `0x12` |
 | Antenna | 433 MHz matched antenna on each module |
 | PC | Windows, Python 3.12, Streamlit |
 
 Device IDs are derived from the ESP32 MAC address, so they stay stable for a
 given board and cannot be forged by a firmware role setting.
+
+COM port numbers are assigned by Windows and **change when a board is
+re-plugged**, so they are not part of the design. During development the pair
+appeared as `COM4`/`COM6`, and after a re-enumeration as `COM4`/`COM5`. The
+dashboard detects both peers automatically and the firmware never hard-codes a
+port.
 
 ---
 
@@ -391,15 +397,10 @@ LoRa_Ground_Station/
 │   ├── architecture.svg          # system + protocol diagram
 │   ├── TEST_RESULTS.md           # captured serial evidence
 │   └── screenshots/              # genuine screenshots of the running app
-├── legacy/                       # superseded first-generation firmware
 ├── start_dashboard.bat
 ├── requirements.txt
 └── README.md
 ```
-
-`legacy/` holds the earlier fixed-role `transmitter.ino` / `receiver.ino` design
-and its logs. It is kept for history only and is **not** used by the current
-system.
 
 ---
 
@@ -551,7 +552,9 @@ screenshots of real LoRa traffic — nothing is mocked or retouched.
 ## Verified test results
 
 Captured from the boards on 2026-11-17 after the ACK timing fix. Full logs are in
-[`docs/TEST_RESULTS.md`](docs/TEST_RESULTS.md).
+[`docs/TEST_RESULTS.md`](docs/TEST_RESULTS.md). Two runs are recorded: the first
+with the ports Windows assigned as `COM4`/`COM6`, and a re-verification after
+the boards re-enumerated to `COM4`/`COM5`.
 
 ### Hardware identification
 
@@ -599,6 +602,34 @@ COM6 -> COM4: DATA,1500,1200,1800,2000
 | Data RSSI | −50 … −51 dBm | −51 … −52 dBm |
 | Data SNR | 9.50 dB | 9.25 … 9.75 dB |
 
+### Re-verification after USB re-enumeration
+
+The same two boards after Windows re-assigned the ports (`COM4` = **2DF4**,
+`COM5` = **7630**), using `tests/peer_diag.py --p1 COM4 --p2 COM5 --test`:
+
+```text
+COM4 (2DF4) -> COM5 (7630)
+  TXSTAGE,seq=29,stage=ACK_RECEIVED,attempt=1,rssi=-51,snr=9.25
+  TXSTAGE,seq=29,stage=DELIVERY_CONFIRMED,attempts=1,tx=OK,ack=OK
+  ACKTX,seq=29,from=7630,attempt=1,begin=1,txdone=1
+  RXPKT,seq=29,from=2DF4,type=T,dup=0,rssi=-45,snr=10.00,ack=OK
+
+COM5 (7630) -> COM4 (2DF4)
+  TXSTAGE,seq=33,stage=ACK_RECEIVED,attempt=1,rssi=-48,snr=10.00
+  TXSTAGE,seq=33,stage=DELIVERY_CONFIRMED,attempts=1,tx=OK,ack=OK
+  ACKTX,seq=33,from=2DF4,attempt=1,begin=1,txdone=1
+  RXPKT,seq=33,from=7630,type=T,dup=0,rssi=-44,snr=10.25,ack=OK
+```
+
+| Check | 2DF4 → 7630 | 7630 → 2DF4 |
+|---|---|---|
+| Matching ACK | yes, attempt 1 | yes, attempt 1 |
+| Delivery | confirmed | confirmed |
+| RSSI / SNR | −45 dBm / 10.00 dB | −44 dBm / 10.25 dB |
+
+This confirms the result does not depend on which USB port a board lands on.
+
+
 ---
 
 ## Troubleshooting
@@ -645,7 +676,9 @@ COM6 -> COM4: DATA,1500,1200,1800,2000
 
 ## Notes
 
-- `legacy/` is kept for reference only; it is not part of the working system.
+- This repository contains the working system only. The superseded
+  fixed-role `transmitter.ino` / `receiver.ino` design is archived locally and
+  intentionally not published, so the code here matches what runs on the boards.
 - No credentials, API keys, virtual environments or build artefacts are
   committed to this repository.
 - Firmware and dashboard behaviour described here was observed on real hardware.

@@ -37,5 +37,8 @@ backup*/
 backups/
 Backups/
 
+# Local archive of superseded first-generation code and logs
+legacy/
+
 # Local-only configuration with machine specific paths
 config/settings.local.json
