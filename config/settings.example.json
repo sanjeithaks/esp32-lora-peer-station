@@ -1,0 +1,11 @@
+{
+  "transmitter_port": "auto",
+  "receiver_port": "auto",
+  "baudrate": 115200,
+  "refresh_seconds": 0.6,
+  "probe_seconds": 3.0,
+  "history_limit": 200,
+  "ack_timeout_ms": 1800,
+  "link_timeout_ms": 8000,
+  "auto_refresh": true
+}

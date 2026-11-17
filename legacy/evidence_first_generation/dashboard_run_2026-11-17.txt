@@ -1,0 +1,151 @@
+Skip to main content
+GROUND STATION
+
+Ground Station
+
+System Diagnostics
+
+PORTS
+
+Transmitter (COM4)
+
+Receiver (auto or COMx)
+
+Apply & Reconnect
+
+TRANSMIT (optional)
+
+Same input as the COM4 Serial Monitor. The Serial Monitor cannot be open at the same time as this dashboard.
+
+Command
+
+Transmit
+
+DETECTED
+
+TX: COM4
+RX: COM6
+
+COM4: TRANSMITTER role verified
+
+COM6: RECEIVER discovered
+
+Only one program can use a COM port. Close the Arduino Serial Monitors while this dashboard is running.
+
+Deploy
+LORA WIRELESS COMMUNICATION SYSTEM
+ESP32 MANUAL TELEMETRY TRANSMISSION AND GROUND STATION MONITORING
+SYSTEM ERROR
+2026-11-17 12:25:31
+TRANSMITTER STATUS
+CONNECTED
+COM4 | SX1278 OK
+RECEIVER STATUS
+CONNECTED
+COM6 | SX1278 OK
+WIRELESS COMMUNICATION
+STALE
+RSSI - dBm | SNR - dB
+LIVE TELEMETRY (FROM LORA RECEIVER)
+CHANNEL 1
+-
+packet -
+CHANNEL 2
+-
+packet -
+CHANNEL 3
+-
+packet -
+CHANNEL 4
+-
+packet -
+TRANSMITTER PANEL
+COM port
+COM4
+ESP32 / firmware
+CONNECTED
+LoRa initialisation
+INITIALIZED
+Transmissions attempted
+6
+Local TX success
+6
+Local TX failure
+0
+ACK received
+0
+ACK timeouts
+6
+Last packet
+2 (T)
+Last transmission
+12:25:08
+Last result
+TX DONE / ACK TIMEOUT
+Last input
+777, 888, 999, 1234
+RECEIVER / GROUND STATION PANEL
+COM port
+COM6
+ESP32 / firmware
+CONNECTED
+LoRa initialisation
+INITIALIZED
+Packets received
+0
+Valid / invalid
+0 / 0
+Duplicates
+0
+Packet loss
+0
+RSSI
+-
+SNR
+-
+ACK sent
+-
+Last packet
+-
+Last reception
+-
+PACKET STATISTICS
+Received
+0
+Valid
+0
+Invalid
+0
+Duplicate
+0
+Loss (sequence gaps)
+0
+ACK success
+0
+ACK failures
+0
+SERIAL PORTS
+COM3
+Communications Port (COM3)
+COM4
+Silicon Labs CP210x USB to UART Bridge (COM4)
+COM6
+Silicon Labs CP210x USB to UART Bridge (COM6)
+LINK
+Overall
+SYSTEM ERROR
+Last RX age
+-
+ACK status
+TIMEOUT
+Detected TX
+COM4
+Detected RX
+COM6
+TELEMETRY HISTORY
+
+No received packets yet. Enter SEND,1500,1000,2000,1500 on the transmitter console or in the sidebar.
+
+keyboard_arrow_right
+
+EVENT LOG
